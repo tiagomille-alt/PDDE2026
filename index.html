@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PDDE 2026</title>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* =====================================================
+   VARIÁVEIS DE CORES (MODO CLARO POR PADRÃO)
+===================================================== */
+:root {
+  --bg-principal: #f5f7fb;
+  --bg-box: #ffffff;
+  --bg-cabecalho: #ffffff;
+  --texto-principal: #333333;
+  --texto-subtitulo: #666666;
+  --texto-links: #cbd5e1;
+  --texto-links-hover: #ffffff;
+  --bordas: #dadce0;
+  --azul-destaque: #0a51ad;
+  --bg-menu-btn: #e8f0fe;
+  --sombra: rgba(0, 0, 0, 0.08);
+  --bg-popup-shadow: rgba(0, 0, 0, 0.6);
+  --bg-status-card: #f8fafc;
+  --borda-status-card: #e5e7eb;
+  
+  --contorno-letras: none; 
+  --contorno-logos: drop-shadow(1px 2px 4px rgba(0,0,0,0.1));
+  --borda-botoes: 1px solid #dadce0;
+  --sombra-cards: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* VARIÁVEIS PARA O MODO ESCURO (COM CONTORNO CLARO ADICIONADO) */
+[data-theme="dark"] {
+  --bg-principal: #121212;
+  --bg-box: #353434;
+  --bg-cabecalho: #1e1e1e;
+  --texto-principal: #e3e3e3;
+  --texto-subtitulo: #aaaaaa;
+  --texto-links: #94a3b8;
+  --texto-links-hover: #ffffff;
+  --bordas: #333333;
+  --azul-destaque: #8ab4f8;
+  --bg-menu-btn: #2d2d2d;
+  --sombra: rgba(0, 0, 0, 0.4);
+  --bg-popup-shadow: rgba(0, 0, 0, 0.8);
+  --bg-status-card: #252525;
+  --borda-status-card: #333333;
+
+  --contorno-letras: 0 1px 2px rgba(0, 0, 0, 0.8); 
+  --contorno-logos: drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.6));
+  
+ /* Contorno branco MUITO MAIS VISÍVEL no modo escuro */
+  --borda-botoes: 2px solid rgba(255, 255, 255, 0.8); /* Borda mais grossa (2px) e quase opaca (0.8) */
+  --sombra-cards: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1.5px rgba(255, 255, 255, 0.6); /* Sombra de contorno extra para reforçar */
+}
+
+/* =====================================================
+   GERAL
+===================================================== */
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body{
+  font-family:'Segoe UI', Arial, sans-serif;
+  background: var(--bg-principal);
+  color: var(--texto-principal);
+  padding-top:95px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* =====================================================
+   CABEÇALHO FIXO
+===================================================== */
+
+.cabecalho{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:85px;
+  background: var(--bg-cabecalho);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 25px;
+  box-sizing:border-box;
+  box-shadow:0 2px 10px var(--sombra);
+  z-index:1000;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.cab-esquerda,
+.cab-direita{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.cab-logo{
+  height:55px;
+  object-fit:contain;
+  filter: var(--contorno-logos);
+  transition: filter 0.3s;
+}
+
+.cab-texto{
+  display:flex;
+  flex-direction:column;
+  line-height:1.2;
+}
+
+.cab-titulo{
+  font-size:20px;
+  font-weight:bold;
+  color: var(--azul-destaque);
+  transition: color 0.3s;
+}
+
+.cab-subtitulo{
+  font-size:13px;
+  color: var(--texto-subtitulo);
+  transition: color 0.3s;
+}
+
+.theme-toggle-btn {
+  background: var(--bg-menu-btn);
+  border: var(--borda-botoes);
+  color: var(--azul-destaque);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px var(--sombra);
+  transition: background 0.2s, color 0.2s, border 0.3s, transform 0.2s;
+  margin-left: 10px;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.05);
+}
+
+.container{
+  max-width:1300px;
+  width: 100%;
+  margin:auto;
+  padding:20px;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+/* INDICAÇÃO DE ATUALIZAÇÃO SINCRONIZADA EM CURSO */
+.indicador-refresh {
+  font-size: 12px;
+  color: var(--texto-subtitulo);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.indicador-refresh i {
+  animation: girar 1.5s infinite linear;
+}
+
+@keyframes girar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   MENU
+===================================================== */
+
+.topo{
+  display:flex;
+  gap:15px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  align-items: center;
+}
+
+.menu-btn{
+  border: var(--borda-botoes);
+  padding:14px 24px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:bold;
+  background: var(--bg-menu-btn);
+  color: var(--azul-destaque);
+  box-shadow: 0 2px 5px var(--sombra);
+  transition: transform 0.2s, background 0.2s, color 0.2s, border 0.3s;
+}
+
+.menu-btn:hover{
+  transform:translateY(-2px);
+  box-shadow: 0 4px 8px var(--sombra);
+}
+
+.menu-btn.ativo{
+  background: var(--azul-destaque);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+}
+
+/* =====================================================
+   PÁGINAS
+===================================================== */
+
+.pagina{
+  display:none;
+}
+
+.pagina.ativa{
+  display:block;
+}
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+.box{
+  background: var(--bg-box);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 4px 20px var(--sombra);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+h1{
+  margin-top:0;
+  text-align:center;
+  color: var(--azul-destaque);
+  margin-bottom:25px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  transition: color 0.3s;
+}
+
+.filtros{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+select{
+  flex:1;
+  min-width:200px;
+  padding:12px;
+  border-radius:10px;
+  border: 1px solid var(--bordas);
+  background: var(--bg-box);
+  color: var(--texto-principal);
+  font-weight: 500;
+  transition: background 0.3s, border 0.3s, color 0.3s;
+}
+
+/* Contorno branco para selects no modo escuro */
+[data-theme="dark"] select {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cards{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+.card{
+  flex:1;
+  min-width:220px;
+  padding:22px;
+  border-radius:14px;
+  color:#ffffff;
+  box-shadow: var(--sombra-cards);
+  transition: transform 0.2s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card.desativado {
+  opacity: 0.35;
+  transform: scale(0.98);
+}
+
+.total{ background: linear-gradient(135deg, #1a73e8, #4285f4); }
+.custeio{ background: linear-gradient(135deg, #16a34a, #2ec162); }
+.capital{ background: linear-gradient(135deg, #fbbc05, #fdd835); }
+
+.card h2{
+  margin:0;
+  font-size:14px;
+  font-weight: 600;
+  opacity: 0.95;
+  letter-spacing: 0.5px;
+}
+
+.card p{
+  margin-top:10px;
+  margin-bottom:0;
+  font-size:28px;
+  font-weight:700;
+  letter-spacing: -0.5px;
+  text-shadow: var(--contorno-letras);
+}
+
+#grafico{
+  height:550px;
+  transition: background 0.3s;
+}
+
+/* =====================================================
+   PESQUISA E BOTOES DE FILTRO SITUAÇÃO
+===================================================== */
+
+.container-filtros-status {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.btn-filtro-situacao {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-radius: 14px;
+  border: 1px solid transparent; 
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--sombra-cards);
+  transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s, border 0.2s;
+}
+
+/* Adiciona o contorno branco explícito nos botões de filtro superiores no modo escuro */
+[data-theme="dark"] .btn-filtro-situacao {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-filtro-situacao:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.btn-filtro-situacao.selecionado {
+  box-shadow: 0 0 0 4px var(--texto-principal);
+}
+
+.btn-filtro-situacao.f-regular { background: #16a34a; }
+.btn-filtro-situacao.f-aprovado { background: #2563eb; }
+.btn-filtro-situacao.f-irregular { background: #dc2626; }
+
+.btn-filtro-situacao .badge-contador {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.input-busca{
+  width:100%;
+  padding:16px;
+  border-radius:14px;
+  border: 1px solid var(--bordas);
+  font-size:16px;
+  box-sizing:border-box;
+  outline:none;
+  background: var(--bg-box);
+  color: var(--texto-principal);
+  box-shadow:0 2px 8px var(--sombra);
+  margin-bottom:25px;
+  transition: background 0.3s, border 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+[data-theme="dark"] .input-busca {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =====================================================
+   ESCOLAS STATUS E CONTATOS
+===================================================== */
+
+.grid-escolas{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+
+.escola-btn{
+  background: var(--bg-box);
+  color: var(--texto-principal);
+  border: var(--borda-botoes);
+  padding:20px;
+  border-radius:16px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:15px;
+  box-shadow: 0 2px 6px var(--sombra);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s, border 0.3s;
+}
+
+.escola-btn:hover{
+  transform:translateY(-4px);
+  background: var(--bg-menu-btn);
+  box-shadow: 0 6px 15px var(--sombra);
+}
+
+.escola-btn .escola-nome-texto {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =====================================================
+   ESTILOS EXCLUSIVOS DO POPUP DE CADASTRO/FICHA
+===================================================== */
+
+.secao-ficha { margin-bottom: 25px; }
+.secao-ficha h3 {
+  font-size: 15px; color: var(--azul-destaque); margin-bottom: 12px; margin-top: 0;
+  border-bottom: 2px solid var(--bordas); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .secao-ficha h3 {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.ficha-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+.ficha-card-individual {
+  background: var(--bg-status-card); border: 1px solid var(--borda-status-card);
+  padding: 18px; border-radius: 14px; display: flex; flex-direction: column; gap: 8px;
+}
+
+.ficha-nome-titular { font-size: 14px; font-weight: bold; color: var(--texto-subtitulo); text-transform: uppercase; letter-spacing: 0.5px; }
+.ficha-linha-dado { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.ficha-linha-dado i { color: var(--azul-destaque); width: 18px; text-align: center; }
+
+.badge-info-escola { font-size: 12px; background: var(--bg-menu-btn); color: var(--azul-destaque); padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+.link-ficha { color: inherit; text-decoration: none; font-weight: 500; }
+.link-ficha:hover { text-decoration: underline; color: var(--azul-destaque); }
+
+/* =====================================================
+   PAINEL INTEGRADOR DO FNDE
+===================================================== */
+
+.painel-fnde {
+  max-width: 750px;
+  margin: 30px auto;
+  border: 1px solid var(--bordas);
+  border-radius: 14px;
+  padding: 30px;
+  background: var(--bg-status-card);
+  text-align: center;
+  box-shadow: var(--sombra-cards);
+}
+
+[data-theme="dark"] .painel-fnde {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.painel-fnde h2 {
+  color: var(--azul-destaque);
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.instrucoes-fnde {
+  text-align: left;
+  margin: 25px 0;
+  padding-left: 20px;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.instrucoes-fnde li {
+  margin-bottom: 10px;
+}
+
+.fnde-btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #0056b3;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.fnde-btn-link:hover {
+  transform: translateY(-2px);
+  background: #004085;
+  box-shadow: 0 6px 18px rgba(0, 86, 179, 0.45);
+}
+
+/* =====================================================
+   POPUP
+===================================================== */
+
+.popup{
+  position:fixed;
+  inset:0;
+  background: var(--bg-popup-shadow);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  padding:20px;
+  box-sizing:border-box;
+  transition: background 0.3s;
+}
+
+.popup-box {
+  width: 95%;
+  max-width: 950px;
+  background: var(--bg-box);
+  color: var(--texto-principal);
+  border-radius: 20px;
+  border: var(--borda-botoes);
+  padding: 30px;
+  position: relative;
+  animation: subir 0.25s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+
+.popup-box::-webkit-scrollbar {
+  display: none;
+}
+
+.popup-box::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.popup-box::-webkit-scrollbar-track {
+  background: var(--bg-status-card); 
+  border-radius: 0 20px 20px 0; 
+}
+
+.popup-box::-webkit-scrollbar-thumb {
+  background-color: var(--azul-destaque); 
+  border-radius: 10px; 
+  border: 2px solid var(--bg-status-card); 
+}
+
+@keyframes subir{
+  from{transform:translateY(20px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+
+.fechar{
+  position:sticky;
+  top:0px;
+  float:right;
+  margin-bottom:-40px;
+  z-index:10;
+  width:40px;
+  height:40px;
+  border: none;
+  border-radius:50%;
+  background:#ef4444;
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.status-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+
+.status-card{
+  border-radius:16px;
+  padding:20px;
+  background: var(--bg-status-card);
+  border: 1px solid var(--borda-status-card);
+  transition: background 0.3s, border 0.3s;
+}
+
+.status-card h3{
+  margin-top:0;
+  color: var(--azul-destaque);
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.info{ margin-top:12px; }
+.label{ font-size:13px; color: var(--texto-subtitulo); transition: color 0.3s; }
+.valor{ font-weight:bold; margin-top:4px; }
+
+/* =====================================================
+   STATUS CORES E PISCA-PISCA
+===================================================== */
+
+.status{
+  padding:5px 10px;
+  border-radius:8px;
+  color:white;
+  font-weight:bold;
+  display:inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.regular{ background:#16a34a;animation:piscando 1s infinite linear; }
+.irregular{ background:#dc2626; animation:piscando 1s infinite linear; }
+.aprovado{ background:#2563eb; }
+
+@keyframes piscando{
+  0%{opacity:1;}
+  50%{opacity:0.2;}
+  100%{opacity:1;}
+}
+
+/* =====================================================
+   DOCUMENTOS
+===================================================== */
+
+.pastas-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+  gap:18px;
+}
+
+.pasta-btn{
+  background: var(--bg-box);
+  color: var(--texto-principal);
+  border: var(--borda-botoes);
+  border-radius:18px;
+  padding:28px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+  box-shadow:0 4px 10px var(--sombra);
+  transition: transform 0.2s, background 0.2s, color 0.2s, border 0.3s;
+}
+
+.pasta-btn:hover{
+  transform:translateY(-4px);
+  background: var(--azul-destaque);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 6px 15px rgba(26, 115, 232, 0.25);
+}
+
+.arquivos-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;
+  margin-top:25px;
+}
+
+.arquivo-card{
+  background: var(--bg-box);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 4px 14px var(--sombra);
+  border: 1px solid var(--bordas);
+  transition: background 0.3s, box-shadow 0.3s, border 0.3s;
+}
+
+[data-theme="dark"] .arquivo-card {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.arquivo-preview{
+  width:100%;
+  height:260px;
+  border:none;
+  background: white;
+}
+
+.arquivo-info{ padding:16px; }
+.arquivo-nome{ font-size:14px; font-weight:bold; margin-bottom:14px; word-break:break-word; }
+.arquivo-acoes{ display:flex; gap:10px; }
+
+.arquivo-btn{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+  color:white;
+}
+
+.visualizar{ background:#1a73e8; }
+.baixar{ background:#16a34a; }
+
+/* =====================================================
+   RODAPÉ
+===================================================== */
+
+.rodape {
+  background-color: #0056b3; 
+  color: white;
+  padding: 40px 25px;
+  margin-top: 50px;
+  font-size: 14px;
+  box-shadow: 0 -3px 15px rgba(0,0,0,0.05);
+}
+
+.rodape-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.rodape-col-esquerda { flex: 1; min-width: 280px; }
+.rodape-col-centro { flex: 0 1 auto; display: flex; justify-content: center; align-items: center; }
+.rodape-col-direita { flex: 1; min-width: 350px; text-align: right; }
+
+.rodape h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.rodape p { margin: 4px 0; color: #f1f5f9; }
+.endereco-link-maps { text-decoration: none; display: block; }
+.endereco-link-maps p { transition: color 0.2s; }
+.endereco-link-maps:hover p { color: #ffffff; text-decoration: underline; }
+
+.bloco-contatos { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+.contato-grupo { display: flex; flex-direction: column; line-height: 1.4; }
+.contato-nome { font-weight: bold; font-size: 14px; color: #ffffff; }
+.contato-dados { font-size: 13px; color: #cbd5e1; transition: color 0.3s; }
+
+.contato-link-click {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.contato-link-click:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.fa-whatsapp { color: #25D366; font-size: 14px; margin-left: 4px; }
+
+.horario-atendimento {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.horario-titulo {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.rodape-brasao {
+  height: 85px;
+  object-fit: contain;
+  filter: drop-shadow(1px 1px 3px rgba(0,0,0,0.15));
+}
+
+@media (max-width: 850px) {
+  .rodape-container { flex-direction: column; align-items: center; text-align: center; }
+  .rodape-col-esquerda, .rodape-col-direita { text-align: center; width: 100%; }
+  .rodape-col-centro { order: -1; margin-bottom: 10px; }
+}
+
+
+/* =====================================================
+   POPUP DE NOTIFICAÇÃO FLUTUANTE
+===================================================== */
+
+.notificacao-alerta {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 380px;
+  max-width: calc(100vw - 30px);
+  background: var(--bg-box);
+  border-left: 6px solid #dc2626;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  z-index: 100000;
+  animation: surgirNotificacao 0.35s ease;
+  border-top: var(--borda-botoes);
+  border-right: var(--borda-botoes);
+  border-bottom: var(--borda-botoes);
+}
+
+.notificacao-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.notificacao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.notificacao-fechar {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #e41414;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.notificacao-texto {
+  font-size: 14px;
+  color: var(--texto-principal);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.lista-alertas {
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.lista-alertas::-webkit-scrollbar {
+  display: none;
+}
+
+.item-alerta {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(118, 46, 185, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.item-alerta strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #e40505;
+}
+
+.item-alerta span {
+  font-size: 13px;
+  color: var(--texto-subtitulo);
+}
+.item-alerta {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.item-alerta:hover {
+  transform: translateY(-2px);
+  background: rgba(220, 38, 38, 0.15);
+}
+
+@keyframes surgirNotificacao {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.info-conta-grafico{
+  display:flex;
+  justify-content:center;
+  margin:20px 0 10px 0;
+}
+
+.conta-badge-grafico{
+  background: linear-gradient(135deg,#1a73e8,#0b57d0);
+  color:#fff;
+  padding:12px 18px;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.15);
+}
+
+[data-theme="dark"] .conta-badge-grafico{
+  background: linear-gradient(135deg,#0f3d91,#1a73e8);
+}
+
+</style>
+
+</head>
+<script>
+
+function abrirNotificacao() {
+
+  const popup = document.getElementById("popupNotificacao");
+
+  if (
+    popup.style.display === "none" ||
+    popup.style.display === ""
+  ) {
+
+    popup.style.display = "block";
+
+  } else {
+
+    popup.style.display = "none";
+
+  }
+
+}
+
+function fecharNotificacao() {
+
+  document.getElementById("popupNotificacao").style.display = "none";
+
+}
+
+</script>
+
+<body>
+
+<div class="cabecalho">
+
+  <div class="cab-esquerda">
+
+    <img class="cab-logo" id="logoPrefeitura" 
+         src="https://drive.google.com/thumbnail?sz=w1000&id=1HZ9aQKB0kXEZTsFwv8V7DNMxmqZhRAHu" 
+         alt="Prefeitura Municipal de Sobral">
+
+    <div class="cab-texto">
+      <div class="cab-titulo">Prefeitura Municipal de Sobral</div>
+      <div class="cab-subtitulo">Secretaria Municipal da Educação</div>
+    </div>
+
+  </div>
+
+  <div class="cab-direita">
+
+    <img class="cab-logo" id="logoFnde" 
+         src="https://drive.google.com/thumbnail?sz=w1000&id=1rZC8OC_xku6U3RjHcEfc-G9W0wanWRmm" 
+         alt="Logo FNDE">
+
+    <img class="cab-logo" id="logoPdde" 
+         style="filter: none !important; background: transparent !important;"
+         src="https://drive.google.com/thumbnail?sz=w1000&id=1Mt32EryFHysh72Yjly8Weo9udMLCBwE5" 
+         alt="Logo PDDE">
+ 
+    <button class="theme-toggle-btn" onclick="abrirNotificacao()" title="Notificações">
+      <i class="fa-solid fa-bell"></i>
+    </button>
+
+    <button class="theme-toggle-btn" id="btnTema" onclick="alternarTema()" title="Alternar modo de cor">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+ 
+  </div>
+
+</div>
+
+<div class="container">
+
+  <div class="topo">
+
+    <button class="menu-btn ativo" onclick="abrirPagina('dashboard',this)">
+      SALDO PDDE 2026
+    </button>
+
+    <button class="menu-btn" onclick="abrirPagina('status',this)">
+      SITUAÇÃO DO PDDE 2026
+    </button>
+
+    <button class="menu-btn" onclick="abrirPagina('contatosPage',this)">
+      DADOS POR ESCOLA
+    </button>
+
+    <button class="menu-btn" onclick="abrirPagina('documentos',this)">
+      ARQUIVOS PDDE
+    </button>
+
+    <button class="menu-btn" onclick="abrirPagina('liberacoes',this)">
+      CONSULTAR LIBERAÇÕES (FNDE)
+    </button>
+
+    <span id="refreshStatus" class="indicador-refresh" style="display: none;">
+      <i class="fa-solid fa-spinner"></i> Atualizando dados em segundo plano...
+    </span>
+
+  </div>
+
+  <div id="dashboard" class="pagina ativa">
+    <div class="box">
+      <h1>SALDOS PDDE 2026</h1>
+      <div class="filtros">
+        <select id="escola"></select>
+        <select id="programa"></select>
+        <select id="acao"></select>
+      </div>
+      <div class="cards">
+        <div class="card total" id="cardTotal" onclick="filtrarPorCategoria('total')">
+          <h2>TOTAL</h2>
+          <p id="txtTotal">R$ 0,00</p>
+        </div>
+        <div class="card custeio" id="cardCusteio" onclick="filtrarPorCategoria('custeio')">
+          <h2>CUSTEIO</h2>
+          <p id="txtCusteio">R$ 0,00</p>
+        </div>
+        <div class="card capital" id="cardCapital" onclick="filtrarPorCategoria('capital')">
+          <h2>CAPITAL</h2>
+          <p id="txtCapital">R$ 0,00</p>
+        </div>
+      </div>
+      <div id="infoContaGrafico" class="info-conta-grafico" style="display:none;"></div>
+      <div id="grafico"></div>
+    </div>
+  </div>
+
+  <div id="status" class="pagina">
+    <div class="box">
+      <h1>SITUAÇÃO DO PDDE 2026</h1>
+      
+      <div class="container-filtros-status">
+        <button id="filtroRegular" class="btn-filtro-situacao f-regular" onclick="alternarFiltroStatus('regular')">
+          <span>ESCOLAS REGULARES</span>
+          <span id="qtdRegular" class="badge-contador">0</span>
+        </button>
+        <button id="filtroAprovado" class="btn-filtro-situacao f-aprovado" onclick="alternarFiltroStatus('approved')">
+          <span>ESCOLAS APROVADAS</span>
+          <span id="qtdAprovado" class="badge-contador">0</span>
+        </button>
+        <button id="filtroIrregular" class="btn-filtro-situacao f-irregular" onclick="alternarFiltroStatus('irregular')">
+          <span>ESCOLAS COM PENDÊNCIAS</span>
+          <span id="qtdIrregular" class="badge-contador">0</span>
+        </button>
+      </div>
+
+      <input type="text" id="pesquisaEscola" class="input-busca" placeholder="Digite o nome da escola..." onkeyup="filtrarEscolas()">
+      <div id="listaEscolas" class="grid-escolas"></div>
+    </div>
+  </div>
+
+  <div id="contatosPage" class="pagina">
+    <div class="box">
+      <h1>DADOS E FICHAS DAS ESCOLAS</h1>
+      <input type="text" id="pesquisaFicha" class="input-busca" placeholder="Pesquise por qualquer termo (Nome, Diretor, Bairro, Inep,Cnpj, E-mail, Telefone...)" onkeyup="filtrarFichas()">
+      <div id="gridContatos" class="grid-escolas"></div>
+    </div>
+  </div>
+
+  <div id="documentos" class="pagina">
+    <div class="box">
+      <h1>DOCUMENTOS PDDE</h1>
+      <div id="pastasContainer"></div>
+    </div>
+  </div>
+
+  <div id="liberacoes" class="pagina">
+    <div class="box">
+      <h1>CONSULTAR ENTRADA DE RECURSOS</h1>
+      
+      <div class="painel-fnde">
+        <h2>Sistema Oficial PDDE Info</h2>
+        <p>Utilize o sistema do FNDE para verificar em tempo real as ordens de pagamentos, repasses e datas de liberação de recursos.</p>
+        
+        <ul class="instrucoes-fnde">
+          <li><i class="fa-solid fa-check" style="color:#16a34a; margin-right:8px;"></i> Clique no botão de acesso abaixo para abrir a página oficial.</li>
+          <li><i class="fa-solid fa-check" style="color:#16a34a; margin-right:8px;"></i> Insira o <strong>CNPJ da Unidade Executora (UEx)</strong> ou o <strong>Código INEP</strong> da escola.</li>
+          <li><i class="fa-solid fa-check" style="color:#16a34a; margin-right:8px;"></i> Selecione o ano de exercício desejado para listar todas as parcelas creditadas.</li>
+        </ul>
+
+        <a href="https://www.fnde.gov.br/pddeinfo/pddeinfo/escola/consultar" target="_blank" class="fnde-btn-link">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Consulta PDDE Info (FNDE)
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <button class="fechar" onclick="fecharPopup()">×</button>
+    <h2 id="popupTitulo"></h2>
+    <div class="status-grid" id="popupConteudo"></div>
+  </div>
+</div>
+
+<div id="popupFicha" class="popup">
+  <div class="popup-box" style="max-width: 900px;">
+    <button class="fechar" onclick="fecharFicha()">×</button>
+    <h2 id="fichaTituloEscola" style="color: var(--azul-destaque); margin-top:0; margin-bottom:4px;"></h2>
+    <p id="fichaConselho" style="margin:0 0 20px 0; font-weight: 500; color: var(--texto-subtitulo); font-size:14px;"></p>
+    <div id="fichaCorpo"></div>
+  </div>
+</div>
+
+<div id="popupDocs" class="popup">
+  <div class="popup-box" style="max-width:1200px;">
+    <button class="fechar" onclick="fecharDocs()">×</button>
+    <h2 id="tituloPasta"></h2>
+    <div id="listaArquivos" class="arquivos-grid"></div>
+  </div>
+</div>
+
+<footer class="rodape">
+  <div class="rodape-container">
+    
+    <div class="rodape-col-esquerda">
+      <h4>Endereço:</h4>
+      <a href="https://maps.google.com/?q=Rua+Viriato+de+Medeiros,+1250+-+Centro,+Sobral+-+CE" target="_blank" class="endereco-link-maps">
+        <p>Rua Viriato de Medeiros, 1250 - Centro</p>
+        <p>CEP.: 62011-065</p>
+      </a>
+    </div>
+
+    <div class="rodape-col-centro">
+      <img class="rodape-brasao" src="https://drive.google.com/thumbnail?sz=w1000&id=1HZ9aQKB0kXEZTsFwv8V7DNMxmqZhRAHu" alt="Brasão Sobral">
+    </div>
+
+    <div class="rodape-col-direita">
+      <h4>Contatos:</h4>
+      <div class="bloco-contatos">
+        <div class="contato-grupo">
+          <span class="contato-nome">Camila Santos</span>
+          <span class="contato-dados">
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=camila.santos@edu.sobral.ce.gov.br" target="_blank" class="contato-link-click">camila.santos@edu.sobral.ce.gov.br</a> - 
+            <a href="https://wa.me/5588999818086" target="_blank" class="contato-link-click">(88) 9.9981-8086 <i class="fa-brands fa-whatsapp"></i></a>
+          </span>
+        </div>
+        <div class="contato-grupo">
+          <span class="contato-nome">Francisco Alexandre</span>
+          <span class="contato-dados">
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=alexandre@edu.sobral.ce.gov.br" target="_blank" class="contato-link-click">alexandre@edu.sobral.ce.gov.br</a> - 
+            <a href="https://wa.me/5588997857017" target="_blank" class="contato-link-click">(88) 9.9785-7017 <i class="fa-brands fa-whatsapp"></i></a>
+          </span>
+        </div>
+        <div class="contato-grupo">
+          <span class="contato-nome">Tiago Carlos</span>
+          <span class="contato-dados">
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=tiago.mille@edu.sobral.ce.gov.br" target="_blank" class="contato-link-click">tiago.mille@edu.sobral.ce.gov.br</a> - 
+            <a href="https://wa.me/5588992289095" target="_blank" class="contato-link-click">(88) 9.9228-9095 <i class="fa-brands fa-whatsapp"></i></a>
+          </span>
+        </div>
+      </div>
+      <div class="horario-atendimento">
+        <div class="horario-titulo">Horário de Atendimento</div>
+        <p>Das 8h às 12h e das 13h às 17h, de segunda a sexta-feira</p>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwQttjiHl1WOndChQHk3z38izljDRHEh78k79ptE9i2uhJd0kpNhW6C81dh6pIpwZ5s/exec";
+const API_CONTATOS_URL = "https://script.google.com/macros/s/AKfycbxyvBRebKVq4xlK25ukGwbWqszu0nV4fkCVzQPhoAYWGOj06TOraDSd0sJNK9I7wOyH/exec";
+const API_CONTAS_URL = "https://script.google.com/macros/s/AKfycbwSBXENHDrcqvyW-jNrTKC1Khnqpy_bzw0ZLH61b7TWCzLWZe-wyLeb117roz5qNWJl/exec";
+
+google.charts.load('current', {packages:['corechart'], language: 'pt-BR'});
+
+let financeiro = [];
+let statusDados = [];
+let arquivosPDDE = [];
+let contatosDados = [];
+let contasDados = []; 
+let dadosGraficoAtual = {};
+let filtroStatusAtivo = "";
+
+google.charts.setOnLoadCallback(iniciar);
+
+function iniciar(){
+  carregarTemaSalvo();
+
+  const cacheGeral = localStorage.getItem("pdde_dados_gerais_cache");
+  const cacheContatos = localStorage.getItem("pdde_contatos_cache");
+
+  if(cacheGeral) {
+    const dadosGerais = JSON.parse(cacheGeral);
+    financeiro = dadosGerais.financeiro || [];
+    statusDados = dadosGerais.status || [];
+    arquivosPDDE = dadosGerais.arquivos || [];
+    
+    carregarFiltros();
+    atualizar();
+    carregarStatus();
+    carregarPastas();
+    mostrarNotificacoesPendentes();
+  }
+
+  if(cacheContatos) {
+    contatosDados = JSON.parse(cacheContatos);
+    carregarGridContatos();
+  }
+
+  document.getElementById("refreshStatus").style.display = "inline-flex";
+
+  fetch(API_URL)
+    .then(r => {
+      if(!r.ok){
+        throw new Error(`Erro HTTP: ${r.status}`);
+      }
+      return r.json();
+    })
+    .then(data => {
+      financeiro = data.financeiro || [];
+      statusDados = data.status || [];
+      arquivosPDDE = data.arquivos || [];
+
+      localStorage.setItem("pdde_dados_gerais_cache", JSON.stringify(data));
+
+      if (data.logos) {
+        if(data.logos.prefeitura) document.getElementById("logoPrefeitura").src = data.logos.prefeitura;
+        if(data.logos.fnde) document.getElementById("logoFnde").src = data.logos.fnde;
+        
+        // Mantém a logo hospedada estaticamente para garantir fundo transparente e alta performance
+        document.getElementById("logoPdde").src = data.logos.pdde;
+      }
+
+      carregarFiltros();
+      atualizar();
+      atualizarInfoConta();
+      carregarStatus();
+      carregarPastas();
+      
+      document.getElementById("refreshStatus").style.display = "none";
+    })
+    .catch(err => {
+      console.log("Erro na atualização de background: ", err);
+      document.getElementById("refreshStatus").style.display = "none";
+    });
+
+  fetch(API_CONTATOS_URL)
+    .then(r => r.json())
+    .then(data => {
+      contatosDados = data || [];
+      localStorage.setItem("pdde_contatos_cache", JSON.stringify(data));
+      carregarGridContatos();
+    })
+    .catch(err => console.log(err));
+
+  fetch(API_CONTAS_URL)
+    .then(r => r.json())
+    .then(data => {
+      contasDados = data || [];
+      atualizarInfoConta();
+    })
+    .catch(err => console.log("Erro ao carregar contas:", err));
+}
+
+function alternarTema() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  let newTheme = "light";
+  
+  if (currentTheme !== "dark") {
+    newTheme = "dark";
+  }
+  
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("pdde_tema_cache", newTheme);
+  atualizarIconeTema(newTheme);
+  
+  if(Object.keys(dadosGraficoAtual).length > 0) {
+    desenhar(dadosGraficoAtual);
+  }
+}
+
+function carregarTemaSalvo() {
+  const temaSalvo = localStorage.getItem("pdde_tema_cache") || "light";
+  document.documentElement.setAttribute("data-theme", temaSalvo);
+  atualizarIconeTema(temaSalvo);
+}
+
+function atualizarIconeTema(tema) {
+  const btn = document.getElementById("btnTema");
+  if(tema === "dark") {
+    btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    btn.style.color = "#fbbc04";
+  } else {
+    btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+    btn.style.color = "#1a73e8";
+  }
+}
+
+function abrirPagina(id,btn){
+  document.querySelectorAll(".pagina").forEach(p => p.classList.remove("ativa"));
+  document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("ativo"));
+  document.getElementById(id).classList.add("ativa");
+  btn.classList.add("ativo");
+
+  if(id === 'dashboard' && Object.keys(dadosGraficoAtual).length > 0) {
+    desenhar(dadosGraficoAtual);
+  }
+}
+
+function moeda(v){
+  return Number(v).toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:2});
+}
+
+function dataBR(data){
+  if(!data) return "-";
+  const d = new Date(data);
+  return d.toLocaleDateString('pt-BR');
+}
+
+
+function carregarFiltros(){
+
+  preencherEscolas();
+  preencherProgramas();
+  preencherAcoes();
+
+  atualizarInfoConta();
+
+  escola.onchange = () => {
+
+    preencherProgramas();
+    preencherAcoes();
+
+    atualizar();
+    atualizarInfoConta();
+  };
+
+  programa.onchange = () => {
+
+    preencherAcoes();
+
+    atualizar();
+    atualizarInfoConta();
+  };
+
+  acao.onchange = () => {
+
+    atualizar();
+    atualizarInfoConta();
+  };
+}
+
+
+function preencher(id,index,base){
+  const el = document.getElementById(id);
+  const lista = [...new Set(base.map(d => d[index]))];
+  el.innerHTML = "<option value=''>TODOS</option>";
+  lista.filter(v => v).sort().forEach(v => {
+    el.innerHTML += `<option value="${v}">${v}</option>`;
+  });
+}
+
+function preencherEscolas(){ preencher("escola","escola",financeiro); }
+function preencherProgramas(){
+  const esc = escola.value;
+  const base = financeiro.filter(d => !esc || d.escola == esc);
+  preencher("programa","programa",base);
+}
+function preencherAcoes(){
+  const esc = escola.value;
+  const prog = programa.value;
+  const base = financeiro.filter(d => (!esc || d.escola == esc) && (!prog || d.programa == prog));
+  preencher("acao","acao",base);
+}
+
+
+function atualizarInfoConta(){
+
+  const esc = document.getElementById("escola").value || "";
+  const prog = document.getElementById("programa").value || "";
+
+  const box = document.getElementById("infoContaGrafico");
+
+  if(!esc || !prog){
+
+    box.style.display = "none";
+    box.innerHTML = "";
+
+    return;
+  }
+
+  const contaEncontrada = contasDados.find(c => {
+
+    const escolaIgual =
+      String(c.escola || "").trim().toLowerCase() ===
+      esc.trim().toLowerCase();
+
+    const programaIgual =
+      String(c.programa || "").trim().toLowerCase() ===
+      prog.trim().toLowerCase();
+
+    return escolaIgual && programaIgual;
+  });
+
+  if(!contaEncontrada){
+
+    box.style.display = "none";
+    box.innerHTML = "";
+
+    return;
+  }
+
+  box.style.display = "flex";
+
+  box.innerHTML = `
+    <div class="conta-badge-grafico">
+      <i class="fa-solid fa-building-columns"></i>
+      <span>
+        <b>Conta do Programa:</b> ${contaEncontrada.conta}
+      </span>
+    </div>
+  `;
+}
+
+
+function atualizar(){
+  const esc = escola.value;
+  const prog = programa.value;
+  const ac = acao.value;
+
+  let total = 0; let custeio = 0; let capital = 0;
+  const agrupado = {};
+
+  financeiro.forEach(d => {
+    const ok = (!esc || d.escola == esc) && (!prog || d.programa == prog) && (!ac || d.acao == ac);
+    if(!ok) return;
+
+    const valor = Number(d.saldo) || 0;
+    const nat = String(d.natureza).toLowerCase();
+
+    total += valor;
+    if(nat.includes("capital")){ capital += valor; } else { custeio += valor; }
+
+    let chave = d.escola;
+    if(esc && !prog){ chave = d.programa; }
+    if(esc && prog){ chave = d.acao; }
+
+    if(!agrupado[chave]){ agrupado[chave] = {custeio:0, capital:0}; }
+    if(nat.includes("capital")){ agrupado[chave].capital += valor; } else { agrupado[chave].custeio += valor; }
+  });
+
+  txtTotal.innerText = moeda(total);
+  txtCusteio.innerText = moeda(custeio);
+  txtCapital.innerText = moeda(capital);
+  
+  dadosGraficoAtual = agrupado; 
+
+  document.getElementById("cardTotal").classList.remove("desativado");
+  document.getElementById("cardCusteio").classList.remove("desativado");
+  document.getElementById("cardCapital").classList.remove("desativado");
+
+  desenhar(agrupado);
+
+  atualizarInfoConta();
+}
+
+function desenhar(agrupado){
+  const tabela = new google.visualization.DataTable();
+  tabela.addColumn('string','Grupo');
+  tabela.addColumn('number','Custeio');
+  tabela.addColumn('number','Capital');
+
+  Object.entries(agrupado)
+    .sort((a,b)=> (b[1].custeio+b[1].capital) - (a[1].custeio+a[1].capital))
+    .forEach(([k,v]) => {
+      tabela.addRow([
+        k, 
+        {v: v.custeio, f: moeda(v.custeio)}, 
+        {v: v.capital, f: moeda(v.capital)}
+      ]);
+    });
+
+  const temaAtivo = document.documentElement.getAttribute("data-theme");
+  const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
+  const corDasLinhas = (temaAtivo === "dark") ? "#444444" : "#dadce0";
+
+  const options = {
+    isStacked: true, 
+    height: 550,
+    backgroundColor: 'transparent',
+    chartArea: { width: '70%', height: '75%' },
+    colors: ['#16a34a', '#fbbc05'], 
+    tooltip: { textStyle: { fontSize: 14 } },
+    hAxis: {
+      format: "R$ #,##0.00", 
+      textStyle: { fontSize: 12, color: corDoTexto },
+      gridlines: { color: corDasLinhas }
+    },
+    vAxis: {
+      textStyle: { fontSize: 12, color: corDoTexto }
+    },
+    legend: {
+      textStyle: { color: corDoTexto }
+    },
+    animation: { startup: false }
+  };
+
+  const chart = new google.visualization.BarChart(document.getElementById('grafico'));
+  chart.draw(tabela, options);
+}
+
+function mapearStatusGeral(escolaObj) {
+  const b = String(escolaObj.basico?.status || "").toLowerCase();
+  const q = String(escolaObj.qualidade?.status || "").toLowerCase();
+  const e = String(escolaObj.equidade?.status || "").toLowerCase();
+
+  if (b.includes("irregular") || q.includes("irregular") || e.includes("irregular")) return "irregular";
+  if (b.includes("aprov") || q.includes("aprov") || e.includes("aprov")) return "aprovado";
+  return "regular";
+}
+
+function carregarStatus(){
+  const lista = document.getElementById("listaEscolas");
+  lista.innerHTML = "";
+  
+  let contadores = { regular: 0, aprovado: 0, irregular: 0 };
+
+  statusDados.sort((a,b)=> a.escola.localeCompare(b.escola)).forEach(escola => {
+    const situacao = mapearStatusGeral(escola);
+    contadores[situacao]++;
+
+    let labelBadge = "REGULAR";
+    if(situacao === "irregular") labelBadge = "IRREGULAR";
+    if(situacao === "aprovado") labelBadge = "APROVADO";
+
+    const index = statusDados.indexOf(escola);
+
+    lista.innerHTML += `
+      <button 
+        class="escola-btn"
+        data-situacao="${situacao}"
+        onclick="abrirPopupPorIndex(${index})">
+        <span class="escola-nome-texto">${escola.escola}</span>
+        <span class="status ${situacao}">${labelBadge}</span>
+      </button>
+    `;
+  });
+
+  document.getElementById("qtdRegular").innerText = contadores.regular;
+  document.getElementById("qtdAprovado").innerText = contadores.aprovado;
+  document.getElementById("qtdIrregular").innerText = contadores.irregular;
+
+  document.getElementById("filtroRegular").style.display = contadores.regular > 0 ? "flex" : "none";
+  document.getElementById("filtroAprovado").style.display = contadores.aprovado > 0 ? "flex" : "none";
+  document.getElementById("filtroIrregular").style.display = contadores.irregular > 0 ? "flex" : "none";
+
+  filtrarEscolas();
+}
+
+function alternarFiltroStatus(statusAlvo) {
+  const botao = document.getElementById("filtro" + statusAlvo.charAt(0).toUpperCase() + statusAlvo.slice(1));
+  
+  if (filtroStatusAtivo === statusAlvo) {
+    filtroStatusAtivo = "";
+    botao.classList.remove("selecionado");
+  } else {
+    document.querySelectorAll(".btn-filtro-situacao").forEach(b => b.classList.remove("selecionado"));
+    filtroStatusAtivo = statusAlvo;
+    botao.classList.add("selecionado");
+  }
+  
+  filtrarEscolas();
+}
+
+function filtrarEscolas(){
+  const texto = document.getElementById("pesquisaEscola").value.toLowerCase();
+  
+  document.getElementById("listaEscolas").querySelectorAll(".escola-btn").forEach(btn => {
+    const statusBtn = btn.getAttribute("data-situacao");
+    const nomeBtn = btn.querySelector(".escola-nome-texto").innerText.toLowerCase();
+    
+    const atendeTexto = nomeBtn.includes(texto);
+    const atendeStatus = (filtroStatusAtivo === "" || statusBtn === filtroStatusAtivo);
+
+    if (atendeTexto && atendeStatus) {
+      btn.style.display = "flex";
+    } else {
+      btn.style.display = "none";
+    }
+  });
+}
+
+function classeStatus(s){
+  s = String(s).toLowerCase();
+  if(s.includes("irregular")) return "irregular";
+  if(s.includes("aprov")) return "aprovado";
+  return "regular";
+}
+
+function abrirPopup(d){
+  popup.style.display = "flex";
+  popupTitulo.innerText = d.escola;
+  popupConteudo.innerHTML = `${cardPDDE("PDDE Básico", d.basico)}${cardPDDE("PDDE Qualidade", d.qualidade)}${cardPDDE("PDDE Equidade", d.equidade)}`;
+}
+function abrirPopupPorIndex(index){
+
+  const escola = statusDados[index];
+
+  if(escola){
+    abrirPopup(escola);
+  }
+}
+
+function fecharPopup(){ popup.style.display = "none"; }
+
+function cardPDDE(nome,d){
+  return `<div class="status-card"><h3>${nome}</h3><div class="info"><div class="label">STATUS</div><div class="status ${classeStatus(d.status)}">${d.status || "-"}</div></div><div class="info"><div class="label">ANÁLISE</div><div class="valor">${dataBR(d.analise)}</div></div><div class="info"><div class="label">DOCUMENTOS</div><div class="valor">${dataBR(d.documentos)}</div></div></div>`;
+}
+
+function carregarGridContatos() {
+  const grid = document.getElementById("gridContatos");
+  grid.innerHTML = "";
+  contatosDados.sort((a,b)=> a.escola.localeCompare(b.escola)).forEach(item => {
+    const btn = document.createElement("button");
+    btn.className = "escola-btn";
+    btn.innerText = item.escola;
+    
+    const todosOsDadosDoPopup = Object.values(item).join(" ").toLowerCase();
+    btn.setAttribute("data-busca", todosOsDadosDoPopup);
+    
+    btn.onclick = () => abrirFichaCompleta(item);
+    grid.appendChild(btn);
+  });
+}
+
+function filtrarFichas() {
+  const texto = document.getElementById("pesquisaFicha").value.toLowerCase();
+  document.getElementById("gridContatos").querySelectorAll(".escola-btn").forEach(btn => {
+    const dadosBusca = btn.getAttribute("data-busca");
+    btn.style.display = dadosBusca.includes(texto) ? "block" : "none";
+  });
+}
+
+function abrirFichaCompleta(d) {
+  document.getElementById("popupFicha").style.display = "flex";
+  document.getElementById("fichaTituloEscola").innerText = d.escola;
+  document.getElementById("fichaConselho").innerText = "Unidade Executora / Conselho: " + (d.conselho || "-");
+  
+  const linkWhats = (num) => "https://wa.me/55" + num.toString().replace(/\D/g, "");
+
+  document.getElementById("fichaCorpo").innerHTML = `
+    <div class="secao-ficha">
+      <h3><i class="fa-solid fa-map-location-dot"></i> Identificação e Localização</h3>
+      <div class="ficha-card-individual" style="gap:12px;">
+        <div class="ficha-linha-dado">
+          <span class="badge-info-escola">INEP: ${d.inep || "-"}</span>
+          <span class="badge-info-escola">CNPJ: ${d.cnpj || "-"}</span>
+          <span class="badge-info-escola">ZONA: ${d.zona || "-"}</span>
+          <span class="badge-info-escola">LOCAL: ${d.localidade || "-"}</span>
+        </div>
+        <div class="ficha-linha-dado">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>${d.endereco || "-"}, Nº ${d.numero || "S/N"} — <b>${d.bairro || "-"}</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="secao-ficha">
+      <h3><i class="fa-solid fa-school"></i> Contatos Oficiais da Instituição</h3>
+      <div class="ficha-grid-2">
+        <div class="ficha-card-individual">
+          <div class="ficha-linha-dado"><i class="fa-solid fa-phone"></i><span><b>Telefone da Unidade:</b></span></div>
+          <div style="padding-left:28px; font-weight:600;">${d.telEscola || "Não informado"}</div>
+        </div>
+        <div class="ficha-card-individual">
+          <div class="ficha-linha-dado"><i class="fa-solid fa-envelope"></i><span><b>E-mail Institucional:</b></span></div>
+          <div style="padding-left:28px;"><a class="link-ficha" href="mailto:${d.emailEscola}">${d.emailEscola || "Não informado"}</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="secao-ficha">
+      <h3><i class="fa-solid fa-users-gear"></i> Equipe Gestora Responsável</h3>
+      <div class="ficha-grid-2">
+        
+        <div class="ficha-card-individual">
+          <div class="ficha-nome-titular"><i class="fa-solid fa-user-tie"></i> Diretor(a)</div>
+          <div style="font-weight: 600; margin-bottom:4px; font-size:15px;">${d.diretor || "Cargo Não Preenchido"}</div>
+          ${d.telDiretor ? `<div class="ficha-linha-dado"><i class="fa-brands fa-whatsapp" style="color:#25D366"></i><a class="link-ficha" href="${linkWhats(d.telDiretor)}" target="_blank"><b>${d.telDiretor}</b> <span style="font-size:12px; color:var(--texto-subtitulo);">(Chamar)</span></a></div>` : ''}
+          ${d.emailDiretor ? `<div class="ficha-linha-dado"><i class="fa-solid fa-envelope"></i><a class="link-ficha" href="mailto:${d.emailDiretor}">${d.emailDiretor}</a></div>` : ''}
+        </div>
+
+        <div class="ficha-card-individual">
+          <div class="ficha-nome-titular">📂 Secretário(a) Escolar</div>
+          <div style="font-weight: 600; margin-bottom:4px; font-size:15px;">${d.secretario || "Cargo Não Preenchido"}</div>
+          ${d.telSecre ? `<div class="ficha-linha-dado"><i class="fa-brands fa-whatsapp" style="color:#25D366"></i><a class="link-ficha" href="${linkWhats(d.telSecre)}" target="_blank"><b>${d.telSecre}</b></a></div>` : ''}
+          ${d.emailSecre ? `<div class="ficha-linha-dado"><i class="fa-solid fa-envelope"></i><a class="link-ficha" href="mailto:${d.emailSecre}">${d.emailSecre}</a></div>` : ''}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="secao-ficha" style="margin-bottom:0;">
+      <h3><i class="fa-solid fa-user-shield"></i> Coordenação de Inspeção / SME</h3>
+      <div class="ficha-card-individual">
+        <div class="ficha-nome-titular">👤 Superintendente Responsável</div>
+        <div style="font-weight: 600; margin-bottom:4px; font-size:15px;">${d.superint || "Não Atribuída"}</div>
+        ${d.emailSuper ? `<div class="ficha-linha-dado"><i class="fa-solid fa-envelope"></i><a class="link-ficha" href="mailto:${d.emailSuper}">${d.emailSuper}</a></div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function fecharFicha() { document.getElementById("popupFicha").style.display = "none"; }
+
+function carregarPastas(){
+  const container = document.getElementById("pastasContainer");
+  const nomesPastas = [...new Set(arquivosPDDE.map(a => a.pasta))].sort();
+  container.innerHTML = `
+  <div class="pastas-grid">
+    ${nomesPastas.map((nome, index) => `
+      <button 
+        class="pasta-btn"
+        onclick="abrirPastaPorIndex(${index})"
+      >
+        📁 ${nome}
+      </button>
+    `).join("")}
+  </div>
+`;
+
+  window.listaPastasPDDE = nomesPastas;
+}
+
+function abrirPasta(nome){
+  tituloPasta.innerText = nome;
+  listaArquivos.innerHTML = arquivosPDDE.filter(a => a.pasta == nome).map(a => `<div class="arquivo-card"><iframe class="arquivo-preview" src="${a.preview}"></iframe><div class="arquivo-info"><div class="arquivo-nome">${a.nome}</div><div class="arquivo-acoes"><a href="${a.url}" target="_blank" class="arquivo-btn visualizar">Abrir</a><a href="${a.download}" class="arquivo-btn baixar">Baixar</a></div></div></div>`).join("");
+  popupDocs.style.display = "flex";
+}
+function abrirPastaPorIndex(index){
+
+  const nome = window.listaPastasPDDE[index];
+
+  if(nome){
+    abrirPasta(nome);
+  }
+}
+
+function fecharDocs(){ popupDocs.style.display = "none"; }
+
+
+function mostrarNotificacoesPendentes() {
+
+  const lista = [];
+
+  statusDados.forEach(escola => {
+
+    const programas = [
+      { nome: "PDDE Básico", dados: escola.basico },
+      { nome: "PDDE Qualidade", dados: escola.qualidade },
+      { nome: "PDDE Equidade", dados: escola.equidade }
+    ];
+
+    programas.forEach(programa => {
+
+      const status = String(programa.dados?.status || "").toLowerCase();
+
+      if (!status.includes("irregular")) return;
+
+      const dataAnalise = programa.dados?.analise;
+
+      if (!dataAnalise) return;
+
+      const data = new Date(dataAnalise);
+      const hoje = new Date();
+
+      const diferencaMs = hoje - data;
+
+     const diasTotal = Math.floor(
+  diferencaMs / (1000 * 60 * 60 * 24)
+);
+
+const diasAtraso = diasTotal - 10;
+
+if (diasAtraso > 0) {
+
+  lista.push({
+    escola: escola.escola,
+    programa: programa.nome,
+    dias: diasAtraso
+  });
+
+}
+
+    });
+
+  });
+
+  const popup = document.getElementById("popupNotificacao");
+  const container = document.getElementById("listaNotificacoes");
+
+  if (lista.length === 0) {
+    popup.style.display = "none";
+    return;
+  }
+
+ container.innerHTML = lista.map(item => `
+
+  <button 
+    class="item-alerta"
+    onclick="abrirAlertaEscola(\`${item.escola}\`)"
+  >
+
+    <strong>${item.escola}</strong>
+
+    <span>
+      ${item.programa} com pendência há ${item.dias} dias
+    </span>
+
+  </button>
+
+`).join("");
+
+  popup.style.display = "block";
+}
+
+function fecharNotificacao() {
+
+  document.getElementById("popupNotificacao").style.display = "none";
+
+}
+
+function abrirAlertaEscola(nomeEscola) {
+
+
+  abrirPagina(
+    'status',
+    document.querySelectorAll('.menu-btn')[1]
+  );
+
+  const escola = statusDados.find(
+    e => e.escola === nomeEscola
+  );
+
+  if (escola) {
+    abrirPopup(escola);
+  }
+
+}
+
+window.onclick = function(event) {
+  const popupSaldo = document.getElementById("popup");
+  const popupFicha = document.getElementById("popupFicha");
+  const popupDocs = document.getElementById("popupDocs");
+
+  if (event.target === popupSaldo) {
+    fecharPopup();
+  }
+  if (event.target === popupFicha) {
+    fecharFicha();
+  }
+  if (event.target === popupDocs) {
+    fecharDocs();
+  }
+}
+
+function filtrarPorCategoria(categoria) {
+  const cardTotal = document.getElementById("cardTotal");
+  const cardCusteio = document.getElementById("cardCusteio");
+  const cardCapital = document.getElementById("cardCapital");
+  const containerGrafico = document.getElementById("grafico");
+
+  cardTotal.classList.remove("desativado");
+  cardCusteio.classList.remove("desativado");
+  cardCapital.classList.remove("desativado");
+
+  if (!dadosGraficoAtual || Object.keys(dadosGraficoAtual).length === 0) return;
+
+  const tabela = new google.visualization.DataTable();
+  tabela.addColumn('string', 'Grupo');
+
+  if (categoria === 'custeio') {
+    cardTotal.classList.add("desativado");
+    cardCapital.classList.add("desativado");
+    tabela.addColumn('number', 'Custeio');
+  } else if (categoria === 'capital') {
+    cardTotal.classList.add("desativado");
+    cardCusteio.classList.add("desativado");
+    tabela.addColumn('number', 'Capital');
+  } else {
+    tabela.addColumn('number', 'Custeio');
+    tabela.addColumn('number', 'Capital');
+  }
+
+  Object.entries(dadosGraficoAtual)
+    .sort((a, b) => {
+      const totalB = (b[1].custeio || 0) + (b[1].capital || 0);
+      const totalA = (a[1].custeio || 0) + (a[1].capital || 0);
+      return totalB - totalA;
+    })
+    .forEach(([k, v]) => {
+      if (categoria === 'custeio') {
+        tabela.addRow([k, {v: v.custeio, f: moeda(v.custeio)}]);
+      } else if (categoria === 'capital') {
+        tabela.addRow([k, {v: v.capital, f: moeda(v.capital)}]);
+      } else {
+        tabela.addRow([k, {v: v.custeio, f: moeda(v.custeio)}, {v: v.capital, f: moeda(v.capital)}]);
+      }
+    });
+
+  const temaAtivo = document.documentElement.getAttribute("data-theme");
+  const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
+  const corDasLinhas = (temaAtivo === "dark") ? "#444444" : "#dadce0";
+
+  let coresGrafico = ['#16a34a', '#fbbc05'];
+  if (categoria === 'custeio') coresGrafico = ['#16a34a'];
+  if (categoria === 'capital') coresGrafico = ['#fbbc05'];
+
+  const options = {
+    isStacked: true, 
+    height: 550,
+    backgroundColor: 'transparent',
+    chartArea: { width: '70%', height: '75%' },
+    colors: coresGrafico, 
+    tooltip: { textStyle: { fontSize: 14 } },
+    hAxis: {
+      format: "R$ #,##0.00", 
+      textStyle: { fontSize: 12, color: corDoTexto },
+      gridlines: { color: corDasLinhas }
+    },
+    vAxis: {
+      textStyle: { fontSize: 12, color: corDoTexto }
+    },
+    legend: {
+      textStyle: { color: corDoTexto }
+    },
+    animation: { startup: false }
+  };
+
+  const chart = new google.visualization.BarChart(containerGrafico);
+  chart.draw(tabela, options);
+}
+</script>
+
+
+<div id="popupNotificacao" class="notificacao-alerta" style="display:none;">
+
+  <div class="notificacao-topo">
+
+    <div class="notificacao-titulo">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span>NOTIFICAÇÕES</span>
+    </div>
+
+    <button class="notificacao-fechar" onclick="fecharNotificacao()">
+      ×
+    </button>
+
+  </div>
+
+  <div class="notificacao-texto">
+    DOCUMENTAÇÃO IRREGULAR:
+  </div>
+
+  <div id="listaNotificacoes" class="lista-alertas"></div>
+
+</div>
+
+
+</body>
+</html>
