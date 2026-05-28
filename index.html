@@ -333,6 +333,9 @@ select{
 #grafico{
   height:550px;
   transition: background 0.3s;
+  overflow-x: auto;
+  overflow-y: visible !important;
+  position: relative;
 }
 
 /* =====================================================
@@ -1895,7 +1898,12 @@ function desenhar(agrupado){
     backgroundColor: 'transparent',
     chartArea: { width: '70%', height: '75%' },
     colors: ['#16a34a', '#fbbc05'], 
-    tooltip: { textStyle: { fontSize: 14 } },
+   tooltip: {
+  isHtml: true,
+  textStyle: {
+    fontSize: 14
+   }
+   },
     hAxis: {
       format: "R$ #,##0.00", 
       textStyle: { fontSize: 12, color: corDoTexto },
