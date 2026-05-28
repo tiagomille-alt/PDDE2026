@@ -961,45 +961,6 @@ select{
 [data-theme="dark"] .conta-badge-grafico{
   background: linear-gradient(135deg,#0f3d91,#1a73e8);
 }
-.cab-logo {
-  max-width: 140px !important; /* Limita a largura máxima para não ficarem gigantes */
-  height: auto !important;
-  object-fit: contain;
-}
-
-/* ⚠️ ATENÇÃO: Tudo aqui dentro SÓ roda em celulares e telas pequenas (menores que 768px) */
-@media screen and (max-width: 768px) {
-  
-  /* Força os blocos principais do topo a ficarem um embaixo do outro no celular */
-  .cabecalho, header, div[class*="header"], div[class*="cab"] {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 15px !important;
-  }
-
-  /* Mantém as logos da direita (FNDE e PDDE) alinhadas lado a lado e centralizadas no celular */
-  .cab-direita {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    gap: 20px !important;
-    width: 100% !important;
-  }
-
-  /* Ajusta o tamanho das logos especificamente para a tela do celular */
-  .cab-logo {
-    max-width: 90px !important; /* Tamanho menor e elegante para smartphone */
-  }
-
-  /* Evita que as letras fiquem grandes demais esmagadas na tela do celular */
-  .cab-titulo {
-    font-size: 18px !important;
-  }
-  .cab-subtitulo {
-    font-size: 14px !important;
-  }
-}
 
 </style>
    
