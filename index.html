@@ -965,72 +965,117 @@ select{
   background: linear-gradient(135deg,#0f3d91,#1a73e8);
 }
 /* =====================================================
-   CORREÇÃO DEFINITIVA: LOGOS E REMOÇÃO DE ROLAGEM
+   MÓDULO DE RESPONSIVIDADE E DASHBOARD FIXO TELA CHEIA
    ===================================================== */
 
-/* 1. RESTAURAÇÃO COMPLETA DO COMPUTADOR (Volta ao original) */
+/* 1. BLINDAGEM DO COMPUTADOR (Fixa o gráfico na tela sem rolar) */
+.cabecalho {
+  height: 85px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
 .cab-logo {
-  height: 55px !important; /* Altura original exata do seu cabeçalho */
+  height: 55px !important;
   width: auto !important;
   max-width: none !important;
 }
-.cabecalho {
-  height: 85px !important;
-}
 
-/* 2. ELIMINAÇÃO TOTAL DAS BARRAS DE ROLAGEM DO GRÁFICO */
-#grafico, #grafico > div, #grafico svg {
-  overflow: hidden !important; /* Remove qualquer barra horizontal ou vertical */
-}
+/* Trava o gráfico para caber na janela do PC, eliminando barras de rolagem */
 #grafico {
-  height: 650px !important; /* Aumenta um pouco para dar espaço a todas as escolas sem esmagar */
+  width: 100% !important;
+  height: calc(100vh - 340px) !important; /* Calcula o espaço restante da tela */
+  min-height: 400px !important;
+  max-height: 520px !important;
+  overflow: hidden !important; 
+}
+#grafico div, #grafico svg {
+  overflow: hidden !important; /* Remove de vez as barras cinzas */
 }
 
-/* 3. REGRAS EXCLUSIVAS PARA CELULAR (O computador ignora tudo aqui) */
+/* 2. REGRAS EXCLUSIVAS PARA CELULAR E TELAS PEQUENAS (max-width: 850px) */
 @media screen and (max-width: 850px) {
+  
+  /* Cabeçalho em Cascata (Igual ao Rodapé) */
   body {
-    padding-top: 175px !important;
+    padding-top: 240px !important; 
   }
   .cabecalho {
     height: auto !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    padding: 12px 15px !important;
+    flex-direction: column !important; 
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 15px !important;
   }
-  .cab-esquerda, .cab-direita {
-    width: 100% !important;
-    justify-content: center !important;
-    flex-wrap: wrap !important;
+  .cab-esquerda {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 10px !important;
+  }
+  .cab-logo {
+    height: 45px !important; 
   }
   .cab-texto {
     text-align: center !important;
   }
-  .cab-logo {
-    height: 40px !important; /* Menor apenas no celular */
+  .cab-titulo {
+    font-size: 16px !important;
   }
-  
-  /* Ajuste do Gráfico no Celular */
-  #grafico {
-    height: 400px !important;
-    width: 100% !important;
+  .cab-subtitulo {
+    font-size: 12px !important;
   }
 
-  /* Organização dos botões do menu no celular */
+  /* Botões do Cabeçalho (Notificação e Tema) Alinhados de Lado */
+  .cab-direita {
+    display: flex !important;
+    flex-direction: row !important; 
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: auto !important;
+  }
+
+  /* Botões do Menu Superior em Grid de 2 Colunas */
   .topo {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
+    width: 100% !important;
   }
   .menu-btn {
-    padding: 10px !important;
-    font-size: 12px !important;
+    padding: 10px 6px !important;
+    font-size: 11px !important;
+    text-align: center !important;
+    white-space: normal !important; 
   }
   .indicador-refresh {
     grid-column: span 2 !important;
+    justify-content: center !important;
     margin: 5px auto !important;
   }
-}
 
+  /* Correção da Página Situação do PDDE (Evita estouro dos botões) */
+  .container-filtros-status {
+    display: flex !important;
+    flex-direction: column !important; 
+    gap: 10px !important;
+    width: 100% !important;
+  }
+  .btn-filtro-situacao {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 18px !important;
+    font-size: 13px !important;
+  }
+
+  /* Altura controlada do Gráfico no Celular */
+  #grafico {
+    height: 350px !important;
+    min-height: 350px !important;
+  }
+}
 
 </style>
    
