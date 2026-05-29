@@ -960,175 +960,88 @@ select{
 [data-theme="dark"] .conta-badge-grafico{
   background: linear-gradient(135deg,#0f3d91,#1a73e8);
 }
-@media screen and (max-width: 768px){
+@media only screen and (max-width: 768px) {
 
-  body{
-    padding-top:170px !important;
-    overflow-x:hidden !important;
+  * {
+    box-sizing: border-box !important;
   }
 
-  .cabecalho{
-    height:auto !important;
-    min-height:150px !important;
-    flex-direction:column !important;
-    justify-content:center !important;
-    align-items:center !important;
-    padding:12px !important;
-    gap:12px !important;
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    display: block !important;
+  }
+
+  /* CABEÇALHO */
+  .cabecalho {
+    width: 100% !important;
+    height: auto !important;
+    padding: 18px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 14px !important;
   }
 
   .cab-esquerda,
-  .cab-direita{
-    width:100% !important;
-    display:flex !important;
-    flex-direction:column !important;
-    justify-content:center !important;
-    align-items:center !important;
-    gap:10px !important;
+  .cab-direita,
+  .topo {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
   }
 
-  .cab-logo{
-    height:50px !important;
-    max-width:100px !important;
-    object-fit:contain !important;
+  .cab-logo {
+    width: auto !important;
+    max-width: 90px !important;
+    height: auto !important;
   }
 
+  .cab-titulo {
+    font-size: 20px !important;
+    text-align: center !important;
+  }
+
+  .cab-subtitulo {
+    font-size: 12px !important;
+    text-align: center !important;
+  }
+
+  /* BOTÕES */
   .menu-btn,
-  .cab-direita button,
-  .cab-direita .btn{
-    width:95% !important;
-    max-width:320px !important;
-    min-height:46px !important;
-    font-size:14px !important;
-    border-radius:12px !important;
+  button,
+  .btn {
+    width: 95% !important;
+    max-width: 320px !important;
+    min-height: 48px !important;
+    font-size: 14px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
+  /* CONTAINER GERAL */
   .container,
   .conteudo,
   .dashboard,
-  main{
-    width:100% !important;
-    max-width:100% !important;
-    padding:10px !important;
-    box-sizing:border-box !important;
-  }
-
-  .cards-grid,
-  .grid,
-  .row{
-    display:flex !important;
-    flex-direction:column !important;
-    gap:12px !important;
-  }
-
-  .card,
-  .box,
-  .grafico-box,
-  .status-card{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:100% !important;
-    margin:0 0 12px 0 !important;
-    box-sizing:border-box !important;
-  }
-
-  #graficoPizza,
-  #graficoBarras,
-  #graficoLinha,
-  [id*="grafico"],
-  [id*="chart"]{
-    width:100% !important;
-    min-width:100% !important;
-    height:320px !important;
-  }
-
-  svg{
-    max-width:100% !important;
-  }
-
-  .popup,
-  .popup-content,
-  .modal,
-  .modal-content{
-    width:95vw !important;
-    max-width:95vw !important;
-    max-height:88vh !important;
-    overflow-y:auto !important;
-    left:50% !important;
-    top:50% !important;
-    transform:translate(-50%, -50%) !important;
-    border-radius:16px !important;
-    box-sizing:border-box !important;
-  }
-
-  .popup img,
-  .modal img{
-    max-width:100% !important;
-    height:auto !important;
-    object-fit:contain !important;
-  }
-
-  .notificacao-alerta,
-  .toast,
-  .notificacao{
-    width:92vw !important;
-    max-width:92vw !important;
-    left:4vw !important;
-    right:4vw !important;
-    top:10px !important;
-    box-sizing:border-box !important;
-  }
-
-  footer,
-  .rodape{
-    flex-direction:column !important;
-    text-align:center !important;
-    gap:10px !important;
-    padding:18px 10px !important;
-    height:auto !important;
-  }
-
-  table{
-    display:block !important;
-    overflow-x:auto !important;
-    white-space:nowrap !important;
-  }
-
-  h1{font-size:24px !important;}
-  h2{font-size:20px !important;}
-  h3{font-size:18px !important;}
-
-}
-
-
-</style>
-
-</head>
-<script>
-
-function abrirNotificacao() {
-
-  const popup = document.getElementById("popupNotificacao");
-
-  if (
-    popup.style.display === "none" ||
-    popup.style.display === ""
-  ) {
-
-    popup.style.display = "block";
-
-  } else {
-
-    popup.style.display = "none";
-
-  }
-
-}
-
-function fecharNotificacao() {
-
-  document.getElementById("popupNotificacao").style.display = "none";
-
+  main {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
 }
 
 </script>
