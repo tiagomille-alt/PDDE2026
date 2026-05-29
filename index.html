@@ -964,6 +964,137 @@ select{
 [data-theme="dark"] .conta-badge-grafico{
   background: linear-gradient(135deg,#0f3d91,#1a73e8);
 }
+/* =====================================================
+   SISTEMA DE RESPONSIVIDADE COMPLETO (CELULAR E TABLET)
+   ===================================================== */
+
+/* 1. Correção Universal de Imagens e Elementos Invisíveis */
+#logoPrefeitura, #logoFnde, #logoPdde, .rodape-brasao {
+  max-width: 130px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+canvas, svg, #grafico {
+  pointer-events: auto !important;
+  z-index: 10 !important;
+  max-width: 100% !important;
+}
+
+/* 2. REGRAS EXCLUSIVAS PARA TELAS MENORES (ATÉ 850px) */
+@media screen and (max-width: 850px) {
+  
+  /* Ajuste Dinâmico do Cabeçalho Fixo (Evita cobrir o conteúdo) */
+  body {
+    padding-top: 175px !important; /* Aumenta o espaço para o topo empilhado */
+  }
+  .cabecalho {
+    height: auto !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 12px 15px !important;
+  }
+  .cab-esquerda, .cab-direita {
+    width: 100% !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+  .cab-texto {
+    text-align: center !important;
+  }
+  .cab-titulo {
+    font-size: 16px !important;
+  }
+  .cab-subtitulo {
+    font-size: 12px !important;
+  }
+  #logoPrefeitura, #logoFnde, #logoPdde {
+    max-width: 75px !important; /* Tamanho otimizado para telas pequenas */
+  }
+
+  /* Ajuste dos Botões do Menu Superior (Ficam em grid organizado) */
+  .topo {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 por linha */
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .menu-btn {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+    text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .indicador-refresh {
+    grid-column: span 2 !important; /* Status ocupa a linha inteira abaixo */
+    justify-content: center !important;
+    margin: 5px auto 0 auto !important;
+  }
+
+  /* Filtros e Cards Centrais */
+  .filtros {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  select {
+    width: 100% !important;
+  }
+  .container-filtros-status {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .btn-filtro-situacao {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 13px !important;
+  }
+
+  /* Redimensionamento Inteligente do Gráfico (Sem rolagem horizontal) */
+  #grafico {
+    height: 380px !important; /* Altura reduzida para caber perfeitamente em smartphones */
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* Grades de Escolas e Cards de Ficha */
+  .grid-escolas {
+    grid-template-columns: 1fr !important; /* 1 escola por linha para não cortar texto */
+  }
+  .ficha-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Popups e Modais Dinâmicos */
+  .popup-box {
+    width: 95% !important;
+    padding: 15px !important;
+    max-height: 90vh !important;
+  }
+  .fechar {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 16px !important;
+  }
+  .status-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .pastas-grid, .arquivos-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .arquivo-preview {
+    height: 180px !important; /* Janela de visualização menor no celular */
+  }
+
+  /* Alerta Flutuante Lateral */
+  .notificacao-alerta {
+    bottom: 10px !important;
+    right: 10px !important;
+    width: calc(100vw - 20px) !important;
+    padding: 15px !important;
+  }
+}
 
 </style>
    
