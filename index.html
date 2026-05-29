@@ -1076,60 +1076,6 @@ select{
     min-height: 350px !important;
   }
 }
-/* =====================================================
-   CORREÇÃO DO POPUP DE NOTIFICAÇÕES (ALERTA FLUTUANTE)
-   ===================================================== */
-
-.notificacao-alerta {
-  position: fixed !important;
-  bottom: 25px !important;
-  right: 25px !important;
-  width: 380px !important;
-  max-width: calc(100vw - 40px) !important;
-  background: var(--bg-box) !important;
-  border-left: 6px solid #dc2626 !important;
-  border-radius: 18px !important;
-  padding: 20px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important;
-  z-index: 100000 !important;
-  box-sizing: border-box !important;
-}
-
-.lista-alertas {
-  max-height: 200px !important;
-  overflow-y: auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-  padding-right: 5px !important;
-}
-
-.lista-alertas::-webkit-scrollbar {
-  width: 4px !important;
-}
-.lista-alertas::-webkit-scrollbar-thumb {
-  background: #dc2626 !important;
-  border-radius: 4px !important;
-}
-
-@media screen and (max-width: 850px) {
-  .notificacao-alerta {
-    bottom: 15px !important;
-    right: 15px !important;
-    left: 15px !important;
-    width: auto !important;
-    padding: 15px !important;
-  }
-  .notificacao-titulo span {
-    font-size: 14px !important;
-  }
-  .item-alerta strong {
-    font-size: 13px !important;
-  }
-  .item-alerta span {
-    font-size: 12px !important;
-  }
-}
    
 </style>
    
