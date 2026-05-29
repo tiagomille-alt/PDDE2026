@@ -1076,7 +1076,61 @@ select{
     min-height: 350px !important;
   }
 }
+/* =====================================================
+   CORREÇÃO DO POPUP DE NOTIFICAÇÕES (ALERTA FLUTUANTE)
+   ===================================================== */
 
+.notificacao-alerta {
+  position: fixed !important;
+  bottom: 25px !important;
+  right: 25px !important;
+  width: 380px !important;
+  max-width: calc(100vw - 40px) !important;
+  background: var(--bg-box) !important;
+  border-left: 6px solid #dc2626 !important;
+  border-radius: 18px !important;
+  padding: 20px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important;
+  z-index: 100000 !important;
+  box-sizing: border-box !important;
+}
+
+.lista-alertas {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding-right: 5px !important;
+}
+
+.lista-alertas::-webkit-scrollbar {
+  width: 4px !important;
+}
+.lista-alertas::-webkit-scrollbar-thumb {
+  background: #dc2626 !important;
+  border-radius: 4px !important;
+}
+
+@media screen and (max-width: 850px) {
+  .notificacao-alerta {
+    bottom: 15px !important;
+    right: 15px !important;
+    left: 15px !important;
+    width: auto !important;
+    padding: 15px !important;
+  }
+  .notificacao-titulo span {
+    font-size: 14px !important;
+  }
+  .item-alerta strong {
+    font-size: 13px !important;
+  }
+  .item-alerta span {
+    font-size: 12px !important;
+  }
+}
+   
 </style>
    
 
@@ -1644,20 +1698,59 @@ function atualizar(){
 }
 
 function desenhar(agrupado){
-  const tabela = new google.visualization.DataTable();
-  tabela.addColumn('string','Grupo');
-  tabela.addColumn('number','Custeio');
-  tabela.addColumn('number','Capital');
+ const tabela = new google.visualization.DataTable();
+ tabela.addColumn('string','Grupo');
+ tabela.addColumn('number','Custeio');
+ tabela.addColumn('number','Capital');
 
-  Object.entries(agrupado)
-    .sort((a,b)=> (b[1].custeio+b[1].capital) - (a[1].custeio+a[1].capital))
-    .forEach(([k,v]) => {
-      tabela.addRow([
-        k, 
-        {v: v.custeio, f: moeda(v.custeio)}, 
-        {v: v.capital, f: moeda(v.capital)}
-      ]);
-    });
+ // 1. Transforma o objeto em uma lista e ordena do maior para o menor saldo total
+ let itensOrdenados = Object.entries(agrupado)
+ .sort((a,b)=> (b[1].custeio + b[1].capital) - (a[1].custeio + a[1].capital));
+
+ // 2. REGRA DE OURO: Se o usuário NÃO filtrou uma escola específica, mostra apenas os 10 maiores
+ const filtroEscolaAtivo = document.getElementById("escola").value;
+ if (!filtroEscolaAtivo && itensOrdenados.length > 10) {
+   itensOrdenados = itensOrdenados.slice(0, 10);
+ }
+
+ // 3. Adiciona as linhas na tabela do gráfico
+ itensOrdenados.forEach(([k,v]) => {
+ tabela.addRow([
+ k, 
+ {v: v.custeio, f: moeda(v.custeio)}, 
+ {v: v.capital, f: moeda(v.capital)}
+ ]);
+ });
+
+ const temaAtivo = document.documentElement.getAttribute("data-theme");
+ const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
+ const corDasLinhas = (temaAtivo === "dark") ? "#444444" : "#dadce0";
+ 
+ const options = {
+ isStacked: true, 
+ height: '100%',
+ backgroundColor: 'transparent',
+ chartArea: { width: '55%', height: '80%' }, // Aumentamos a margem lateral para o nome da escola caber no celular
+ colors: ['#16a34a', '#fbbc05'], 
+ tooltip: { textStyle: { fontSize: 13 } },
+ hAxis: {
+ format: "R$ #,##0.00", 
+ textStyle: { fontSize: 10, color: corDoTexto },
+ gridlines: { color: corDasLinhas }
+ },
+ vAxis: {
+ textStyle: { fontSize: 10, color: corDoTexto } // Garante que o nome das 10 maiores apareça nítido
+ },
+ legend: {
+ textStyle: { color: corDoTexto },
+ position: 'top' // Legenda no topo economiza espaço lateral no celular
+ },
+ animation: { startup: false }
+ };
+ const chart = new google.visualization.BarChart(document.getElementById('grafico'));
+ chart.draw(tabela, options);
+}
+
 
   const temaAtivo = document.documentElement.getAttribute("data-theme");
   const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
