@@ -1306,6 +1306,285 @@ select{
   }
 
 }
+   /* =====================================================
+   RESPONSIVIDADE MOBILE TOTAL
+===================================================== */
+
+@media screen and (max-width: 768px){
+
+  /* ===== BODY ===== */
+
+  body{
+    overflow-x:hidden !important;
+  }
+
+  .container{
+    padding: 10px !important;
+  }
+
+  /* ===== CABEÇALHO ===== */
+
+  .cabecalho{
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 14px !important;
+    padding: 14px !important;
+    text-align:center;
+  }
+
+  .cab-esquerda{
+    width:100% !important;
+    justify-content:center !important;
+    flex-direction:column !important;
+    gap:10px !important;
+  }
+
+  .cab-direita{
+    width:100% !important;
+    justify-content:center !important;
+    flex-wrap:wrap !important;
+    gap:10px !important;
+  }
+
+  .cab-logo{
+    height:58px !important;
+    max-width:120px !important;
+    object-fit:contain !important;
+  }
+
+  .cab-texto{
+    text-align:center !important;
+  }
+
+  .cab-titulo{
+    font-size:20px !important;
+    line-height:1.2 !important;
+  }
+
+  .cab-subtitulo{
+    font-size:14px !important;
+  }
+
+  /* ===== MENU ===== */
+
+  .topo{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    justify-content:center !important;
+    gap:8px !important;
+    padding:10px !important;
+  }
+
+  .menu-btn{
+    width:100% !important;
+    font-size:13px !important;
+    padding:12px !important;
+    border-radius:12px !important;
+  }
+
+  /* ===== BOX ===== */
+
+  .box{
+    padding:14px !important;
+    border-radius:16px !important;
+  }
+
+  .box h1{
+    font-size:22px !important;
+    text-align:center !important;
+  }
+
+  /* ===== FILTROS ===== */
+
+  .filtros{
+    flex-direction:column !important;
+    gap:10px !important;
+  }
+
+  .filtros select{
+    width:100% !important;
+    font-size:14px !important;
+  }
+
+  /* ===== CARDS ===== */
+
+  .cards{
+    flex-direction:column !important;
+    gap:12px !important;
+  }
+
+  .card{
+    width:100% !important;
+    min-width:100% !important;
+    padding:18px !important;
+  }
+
+  .card h2{
+    font-size:15px !important;
+  }
+
+  .card p{
+    font-size:22px !important;
+  }
+
+  /* ===== GRÁFICO ===== */
+
+  #grafico{
+    width:100% !important;
+    height:auto !important;
+    min-height:420px !important;
+    overflow:hidden !important;
+  }
+
+  /* remove barra lateral */
+  svg{
+    max-width:100% !important;
+  }
+
+  /* ===== STATUS ===== */
+
+  .container-filtros-status{
+    flex-direction:column !important;
+    gap:10px !important;
+  }
+
+  .btn-filtro-situacao{
+    width:100% !important;
+    justify-content:space-between !important;
+  }
+
+  /* ===== GRID ESCOLAS ===== */
+
+  .grid-escolas{
+    grid-template-columns:1fr !important;
+  }
+
+  .escola-btn{
+    width:100% !important;
+    min-height:65px !important;
+    font-size:14px !important;
+  }
+
+  /* ===== POPUPS ===== */
+
+  .popup{
+    padding:10px !important;
+    align-items:flex-start !important;
+    overflow-y:auto !important;
+  }
+
+  .popup-box{
+    width:100% !important;
+    max-width:100% !important;
+    height:auto !important;
+    max-height:92vh !important;
+    overflow-y:auto !important;
+    border-radius:18px !important;
+    padding:16px !important;
+    margin-top:20px !important;
+  }
+
+  .popup-box h2{
+    font-size:20px !important;
+  }
+
+  /* ===== POPUP NOTIFICAÇÃO ===== */
+
+  .notificacao-alerta{
+    width:calc(100% - 20px) !important;
+    right:10px !important;
+    left:10px !important;
+    bottom:10px !important;
+    max-height:75vh !important;
+    overflow-y:auto !important;
+    border-radius:18px !important;
+  }
+
+  .item-alerta{
+    width:100% !important;
+  }
+
+  /* ===== DOCUMENTOS ===== */
+
+  .pastas-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .arquivos-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .arquivo-card{
+    width:100% !important;
+  }
+
+  .arquivo-preview{
+    height:220px !important;
+  }
+
+  /* ===== FICHA ===== */
+
+  .ficha-grid-2{
+    grid-template-columns:1fr !important;
+  }
+
+  .ficha-linha-dado{
+    flex-wrap:wrap !important;
+  }
+
+  /* ===== RODAPÉ ===== */
+
+  .rodape-container{
+    flex-direction:column !important;
+    text-align:center !important;
+    gap:20px !important;
+  }
+
+  .rodape-col-esquerda,
+  .rodape-col-centro,
+  .rodape-col-direita{
+    width:100% !important;
+  }
+
+  .rodape-brasao{
+    height:70px !important;
+  }
+
+}
+
+/* =====================================================
+   MOBILE PEQUENO
+===================================================== */
+
+@media screen and (max-width: 480px){
+
+  .cab-titulo{
+    font-size:18px !important;
+  }
+
+  .cab-subtitulo{
+    font-size:13px !important;
+  }
+
+  .card p{
+    font-size:20px !important;
+  }
+
+  .menu-btn{
+    font-size:12px !important;
+    padding:10px !important;
+  }
+
+  .popup-box{
+    padding:14px !important;
+  }
+
+  .arquivo-preview{
+    height:180px !important;
+  }
+
+}
 </style>
    
 
