@@ -2,7 +2,8 @@
 <html lang="pt-br">
 
 <head>
-
+   
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -332,6 +333,9 @@ select{
 #grafico{
   height:550px;
   transition: background 0.3s;
+  overflow-x: auto;
+  overflow-y: visible !important;
+  position: relative;
 }
 
 /* =====================================================
@@ -960,88 +964,202 @@ select{
 [data-theme="dark"] .conta-badge-grafico{
   background: linear-gradient(135deg,#0f3d91,#1a73e8);
 }
-@media only screen and (max-width: 768px) {
+/* =====================================================
+   MÓDULO DE RESPONSIVIDADE E DASHBOARD FIXO TELA CHEIA
+   ===================================================== */
 
-  * {
-    box-sizing: border-box !important;
-  }
+/* 1. BLINDAGEM DO COMPUTADOR (Fixa o gráfico na tela sem rolar) */
+.cabecalho {
+  height: 85px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+.cab-logo {
+  height: 55px !important;
+  width: auto !important;
+  max-width: none !important;
+}
 
-  html,
+/* Trava o gráfico para caber na janela do PC, eliminando barras de rolagem */
+#grafico {
+  width: 100% !important;
+  height: calc(100vh - 340px) !important; /* Calcula o espaço restante da tela */
+  min-height: 400px !important;
+  max-height: 520px !important;
+  overflow: hidden !important; 
+}
+#grafico div, #grafico svg {
+  overflow: hidden !important; /* Remove de vez as barras cinzas */
+}
+
+/* 2. REGRAS EXCLUSIVAS PARA CELULAR E TELAS PEQUENAS (max-width: 850px) */
+@media screen and (max-width: 850px) {
+  
+  /* Cabeçalho em Cascata (Igual ao Rodapé) */
   body {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    padding-top: 240px !important; 
   }
-
-  body {
-    display: block !important;
-  }
-
-  /* CABEÇALHO */
   .cabecalho {
-    width: 100% !important;
     height: auto !important;
-    padding: 18px 10px !important;
-    display: flex !important;
-    flex-direction: column !important;
+    flex-direction: column !important; 
     align-items: center !important;
-    justify-content: center !important;
-    gap: 14px !important;
+    gap: 15px !important;
+    padding: 15px !important;
   }
-
-  .cab-esquerda,
-  .cab-direita,
-  .topo {
-    width: 100% !important;
-    display: flex !important;
+  .cab-esquerda {
     flex-direction: column !important;
     align-items: center !important;
-    justify-content: center !important;
+    text-align: center !important;
     gap: 10px !important;
   }
-
   .cab-logo {
-    width: auto !important;
-    max-width: 90px !important;
-    height: auto !important;
+    height: 45px !important; 
   }
-
-  .cab-titulo {
-    font-size: 20px !important;
+  .cab-texto {
     text-align: center !important;
   }
-
+  .cab-titulo {
+    font-size: 16px !important;
+  }
   .cab-subtitulo {
     font-size: 12px !important;
-    text-align: center !important;
   }
 
-  /* BOTÕES */
-  .menu-btn,
-  button,
-  .btn {
-    width: 95% !important;
-    max-width: 320px !important;
-    min-height: 48px !important;
-    font-size: 14px !important;
-    border-radius: 12px !important;
+  /* Botões do Cabeçalho (Notificação e Tema) Alinhados de Lado */
+  .cab-direita {
     display: flex !important;
-    align-items: center !important;
+    flex-direction: row !important; 
     justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: auto !important;
   }
 
-  /* CONTAINER GERAL */
-  .container,
-  .conteudo,
-  .dashboard,
-  main {
+  /* Botões do Menu Superior em Grid de 2 Colunas */
+  .topo {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
     width: 100% !important;
-    max-width: 100% !important;
-    padding: 10px !important;
-    margin: 0 !important;
-    overflow-x: hidden !important;
+  }
+  .menu-btn {
+    padding: 10px 6px !important;
+    font-size: 11px !important;
+    text-align: center !important;
+    white-space: normal !important; 
+  }
+  .indicador-refresh {
+    grid-column: span 2 !important;
+    justify-content: center !important;
+    margin: 5px auto !important;
+  }
+
+  /* Correção da Página Situação do PDDE (Evita estouro dos botões) */
+  .container-filtros-status {
+    display: flex !important;
+    flex-direction: column !important; 
+    gap: 10px !important;
+    width: 100% !important;
+  }
+  .btn-filtro-situacao {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 18px !important;
+    font-size: 13px !important;
+  }
+
+  /* Altura controlada do Gráfico no Celular */
+  #grafico {
+    height: 350px !important;
+    min-height: 350px !important;
+  }
+}
+/* =====================================================
+   CORREÇÃO DO POPUP DE NOTIFICAÇÕES (ALERTA FLUTUANTE)
+   ===================================================== */
+
+.notificacao-alerta {
+  position: fixed !important;
+  bottom: 25px !important;
+  right: 25px !important;
+  width: 380px !important;
+  max-width: calc(100vw - 40px) !important;
+  background: var(--bg-box) !important;
+  border-left: 6px solid #dc2626 !important;
+  border-radius: 18px !important;
+  padding: 20px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important;
+  z-index: 100000 !important;
+  box-sizing: border-box !important;
+}
+
+.lista-alertas {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding-right: 5px !important;
+}
+
+.lista-alertas::-webkit-scrollbar {
+  width: 4px !important;
+}
+.lista-alertas::-webkit-scrollbar-thumb {
+  background: #dc2626 !important;
+  border-radius: 4px !important;
+}
+
+@media screen and (max-width: 850px) {
+  .notificacao-alerta {
+    bottom: 15px !important;
+    right: 15px !important;
+    left: 15px !important;
+    width: auto !important;
+    padding: 15px !important;
+  }
+  .notificacao-titulo span {
+    font-size: 14px !important;
+  }
+  .item-alerta strong {
+    font-size: 13px !important;
+  }
+  .item-alerta span {
+    font-size: 12px !important;
+  }
+}
+
+</style>
+   
+
+</head>
+<script>
+
+function abrirNotificacao() {
+
+  const popup = document.getElementById("popupNotificacao");
+
+  if (
+    popup.style.display === "none" ||
+    popup.style.display === ""
+  ) {
+
+    popup.style.display = "block";
+
+  } else {
+
+    popup.style.display = "none";
+
+  }
+
+}
+
+function fecharNotificacao() {
+
+  document.getElementById("popupNotificacao").style.display = "none";
+
 }
 
 </script>
@@ -1580,20 +1698,59 @@ function atualizar(){
 }
 
 function desenhar(agrupado){
-  const tabela = new google.visualization.DataTable();
-  tabela.addColumn('string','Grupo');
-  tabela.addColumn('number','Custeio');
-  tabela.addColumn('number','Capital');
+ const tabela = new google.visualization.DataTable();
+ tabela.addColumn('string','Grupo');
+ tabela.addColumn('number','Custeio');
+ tabela.addColumn('number','Capital');
 
-  Object.entries(agrupado)
-    .sort((a,b)=> (b[1].custeio+b[1].capital) - (a[1].custeio+a[1].capital))
-    .forEach(([k,v]) => {
-      tabela.addRow([
-        k, 
-        {v: v.custeio, f: moeda(v.custeio)}, 
-        {v: v.capital, f: moeda(v.capital)}
-      ]);
-    });
+ // 1. Transforma o objeto em uma lista e ordena do maior para o menor saldo total
+ let itensOrdenados = Object.entries(agrupado)
+ .sort((a,b)=> (b[1].custeio + b[1].capital) - (a[1].custeio + a[1].capital));
+
+ // 2. REGRA DE OURO: Se o usuário NÃO filtrou uma escola específica, mostra apenas os 10 maiores
+ const filtroEscolaAtivo = document.getElementById("escola").value;
+ if (!filtroEscolaAtivo && itensOrdenados.length > 10) {
+   itensOrdenados = itensOrdenados.slice(0, 10);
+ }
+
+ // 3. Adiciona as linhas na tabela do gráfico
+ itensOrdenados.forEach(([k,v]) => {
+ tabela.addRow([
+ k, 
+ {v: v.custeio, f: moeda(v.custeio)}, 
+ {v: v.capital, f: moeda(v.capital)}
+ ]);
+ });
+
+ const temaAtivo = document.documentElement.getAttribute("data-theme");
+ const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
+ const corDasLinhas = (temaAtivo === "dark") ? "#444444" : "#dadce0";
+ 
+ const options = {
+ isStacked: true, 
+ height: '100%',
+ backgroundColor: 'transparent',
+ chartArea: { width: '55%', height: '80%' }, // Aumentamos a margem lateral para o nome da escola caber no celular
+ colors: ['#16a34a', '#fbbc05'], 
+ tooltip: { textStyle: { fontSize: 13 } },
+ hAxis: {
+ format: "R$ #,##0.00", 
+ textStyle: { fontSize: 10, color: corDoTexto },
+ gridlines: { color: corDasLinhas }
+ },
+ vAxis: {
+ textStyle: { fontSize: 10, color: corDoTexto } // Garante que o nome das 10 maiores apareça nítido
+ },
+ legend: {
+ textStyle: { color: corDoTexto },
+ position: 'top' // Legenda no topo economiza espaço lateral no celular
+ },
+ animation: { startup: false }
+ };
+ const chart = new google.visualization.BarChart(document.getElementById('grafico'));
+ chart.draw(tabela, options);
+}
+
 
   const temaAtivo = document.documentElement.getAttribute("data-theme");
   const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
@@ -1605,7 +1762,12 @@ function desenhar(agrupado){
     backgroundColor: 'transparent',
     chartArea: { width: '70%', height: '75%' },
     colors: ['#16a34a', '#fbbc05'], 
-    tooltip: { textStyle: { fontSize: 14 } },
+   tooltip: {
+  isHtml: true,
+  textStyle: {
+    fontSize: 14
+   }
+   },
     hAxis: {
       format: "R$ #,##0.00", 
       textStyle: { fontSize: 12, color: corDoTexto },
@@ -1622,7 +1784,7 @@ function desenhar(agrupado){
 
   const chart = new google.visualization.BarChart(document.getElementById('grafico'));
   chart.draw(tabela, options);
-}
+
 
 function mapearStatusGeral(escolaObj) {
   const b = String(escolaObj.basico?.status || "").toLowerCase();
