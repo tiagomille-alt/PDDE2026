@@ -281,22 +281,24 @@ select{
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.cards{
-  display:flex;
-  gap:15px;
-  flex-wrap:wrap;
-  margin-bottom:25px;
+.cards {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+  width: 100%; /* Garante que o container não exceda o pai */
 }
 
-.card{
-  flex:1;
-  min-width:220px;
-  padding:22px;
-  border-radius:14px;
-  color:#ffffff;
+.card {
+  flex: 1;
+  min-width: 250px; /* Ajustado para permitir quebra de linha melhor */
+  padding: 22px;
+  border-radius: 14px;
+  color: #ffffff;
   box-shadow: var(--sombra-cards);
   transition: transform 0.2s, box-shadow 0.3s;
   cursor: pointer;
+  box-sizing: border-box; /* Essencial para o padding não somar na largura */
 }
 
 .card:hover {
@@ -329,9 +331,12 @@ select{
   text-shadow: var(--contorno-letras);
 }
 
-#grafico{
-  height:550px;
+#grafico {
+  width: 100%;
+  height: 500px; /* Altura um pouco menor para mobile */
+  min-height: 300px;
   transition: background 0.3s;
+  overflow: hidden; /* Evita que o SVG interno vaze */
 }
 
 /* =====================================================
@@ -960,6 +965,65 @@ select{
 [data-theme="dark"] .conta-badge-grafico{
   background: linear-gradient(135deg,#0f3d91,#1a73e8);
 }
+/* =====================================================
+   RESPONSIVIDADE (CELULAR)
+===================================================== */
+@media (max-width: 768px) {
+  /* Ajuste do Cabeçalho */
+  .cabecalho {
+    height: auto;
+    padding: 10px 15px;
+    flex-direction: column; /* Empilha logo e botões */
+    gap: 10px;
+  }
+
+  body {
+    padding-top: 140px; /* Aumenta o recuo devido ao cabeçalho maior */
+  }
+
+  .cab-titulo {
+    font-size: 18px;
+  }
+
+  /* Menu de Navegação */
+  .topo {
+    justify-content: center;
+  }
+
+  .menu-btn {
+    flex: 1; /* Botões ocupam largura igual */
+    padding: 10px;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  /* Dashboard e Cards */
+  .cards {
+    flex-direction: column; /* Cards um embaixo do outro */
+  }
+
+@media (max-width: 600px) {
+  .card {
+    min-width: 100%; /* Em celulares, os cards empilham um embaixo do outro */
+  }
+  
+  #grafico {
+    height: 350px; /* Reduz a altura do gráfico para caber na tela do celular */
+  }
+
+  .container {
+    padding: 10px; /* Reduz padding lateral para ganhar espaço */
+  }
+
+  .cabecalho {
+    padding: 10px 15px;
+  }
+  
+  .cab-titulo {
+    font-size: 16px; /* Ajusta título para não quebrar o cabeçalho */
+  }
+}
+}
 
 </style>
 
@@ -1569,6 +1633,71 @@ function desenhar(agrupado){
 
   const chart = new google.visualization.BarChart(document.getElementById('grafico'));
   chart.draw(tabela, options);
+  // Variável global para armazenar o estado atual dos dados
+let ultimoDadoAgrupado = null;
+
+function desenhar(agrupado) {
+  // 1. Salva o dado recebido para uso posterior no redimensionamento
+  ultimoDadoAgrupado = agrupado;
+
+  const tabela = new google.visualization.DataTable();
+  tabela.addColumn('string','Grupo');
+  tabela.addColumn('number','Custeio');
+  tabela.addColumn('number','Capital');
+
+  Object.entries(agrupado)
+    .sort((a,b)=> (b[1].custeio+b[1].capital) - (a[1].custeio+a[1].capital))
+    .forEach(([k,v]) => {
+      tabela.addRow([
+        k, 
+        {v: v.custeio, f: moeda(v.custeio)}, 
+        {v: v.capital, f: moeda(v.capital)}
+      ]);
+    });
+
+  const temaAtivo = document.documentElement.getAttribute("data-theme");
+  const corDoTexto = (temaAtivo === "dark") ? "#ffffff" : "#333333";
+  const corDasLinhas = (temaAtivo === "dark") ? "#444444" : "#dadce0";
+
+  // 2. Ajuste dinâmico de altura para celular
+  const larguraJanela = window.innerWidth;
+  const alturaGrafico = larguraJanela < 768 ? 400 : 550;
+
+  const options = {
+    isStacked: true, 
+    height: alturaGrafico, // Altura dinâmica
+    backgroundColor: 'transparent',
+    chartArea: { 
+        width: larguraJanela < 768 ? '60%' : '75%', // Mais espaço lateral no celular
+        height: '75%' 
+    },
+    colors: ['#16a34a', '#fbbc05'], 
+    tooltip: { textStyle: { fontSize: 14 } },
+    hAxis: {
+      format: "currency", // Formato nativo simplificado
+      textStyle: { fontSize: larguraJanela < 768 ? 10 : 12, color: corDoTexto },
+      gridlines: { color: corDasLinhas }
+    },
+    vAxis: {
+      textStyle: { fontSize: larguraJanela < 768 ? 10 : 12, color: corDoTexto }
+    },
+    legend: {
+      position: larguraJanela < 768 ? 'top' : 'right', // Legenda em cima no celular
+      textStyle: { color: corDoTexto, fontSize: 11 }
+    },
+    animation: { startup: false }
+  };
+
+  const chart = new google.visualization.BarChart(document.getElementById('grafico'));
+  chart.draw(tabela, options);
+}
+
+// 3. O "PULO DO GATO": Evento de redimensionamento
+window.addEventListener('resize', () => {
+  if (ultimoDadoAgrupado) {
+    desenhar(ultimoDadoAgrupado);
+  }
+});
 }
 
 function mapearStatusGeral(escolaObj) {
